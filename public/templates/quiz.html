@@ -1,0 +1,85 @@
+<div class="row">
+
+  <h3 class="heading col-md-6">{{quizName}}</h3>
+  <div class="form-horizontal pull-right col-md-6">
+    <div class="form-group">
+      <label class="col-sm-5 control-label">Invite Code</label>
+      <div class="col-sm-7">
+        <input type="text"  disabled class="form-control"  ng-model="inviteCode">
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="row">
+  <div class="col-md-2">
+    <div class="btn-group-vertical">
+      <button class="btn btn-primary" ng-click="selectQuestion()">Select Question</button>
+      <button class="btn btn-danger " ng-disabled="activeQuestion.used" ng-click="sendQuestion()">Send question</button>
+      <button class="{{startTimer_class}} " ng-disabled="activeQuestion.used" ng-click="startTimer()">Start Timer</button>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <p><strong>Question: {{activeQuestion.questionText}}</strong></p>
+    Answer: {{activeQuestion.answerText}}
+  </div>
+  <div class="col-md-2">
+    Time: {{activeQuestion.time}} 
+    <br> 
+    Points: {{activeQuestion.points}}
+    <b4>
+    <h3>TIME: <span class="label label-danger">{{timer}}</span></h3>
+  </div>
+  
+</div>
+<br>
+
+<div class="row">
+  <div class="col-md-4" ng-repeat="school in schools">
+    <h4>{{school.schoolName}} - <span class="badge">{{school.points}}</span></h4>
+<!--     <img class="img-responsive text-center " ng-src="{{school.currentAnswer.src}}"> -->
+    <canvas id="canvas{{school.schoolId}}" height="300" width="400" style="border: 2px solid rgb(67, 0, 0); width:400px; height:300px; "></canvas>
+    <div class="btn-group">
+      <a ng-disabled="school.currentAnswer.judged" class="btn btn-success btn-sm" ng-click='school.acceptAnswer()'>
+        Accept
+      </a>
+      <a ng-disabled="school.currentAnswer.judged"  class="btn btn-danger btn-sm" ng-click='school.rejectAnswer()'>
+        Reject
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<div id="questionsModal" class="modal bs-modal-lg" role="dialog" >
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h5 class="modal-title">Select Question</h5>
+      </div>
+      <div class="modal-body">
+        <div ng-repeat="category in  quiz" class="form-horizontal" name="newRewardForm" novalidate>
+          <h3 class="text-center">{{category.categoryName}}</h3>
+          <ul class="media-list">
+            <li class="media" ng-repeat="question in category.questions">
+              <div ng-hide="question.used" class="panel">
+                <a class="btn btn-primary pull-left" ng-click="question.select()"  style="margin-right:15px;">
+                  Select
+                </a>
+                <div class="media-body">
+                  {{question.questionText}}
+                </div>
+              </div>
+            </li>
+          </ul>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="save()">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
