@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-md-7
+        h3 Requested Page Requires Authentication
+          hr.col-md-12
+          form.form-horizontal(role="form", action="/login", method='post')#login
+            div.form-group
+              //-label.col-md-4.control-label(for="inputEmail") Login
+              .col-md-8
+                input.form-control(type="hidden", name='email', value="hi", id="inputEmail")
+            div.form-group 
+              label.col-md-4.control-label(for="inputPassword") Passkey
+              .col-md-8
+                input.col-md-8.form-control(type="password", name='password', id="inputPassword")
+            div.form-group
+              .col-md-8.col-md-offset-4
+                button.form-control.btn.btn-info(class="", type='submit') Submit
+          hr.col-md-12

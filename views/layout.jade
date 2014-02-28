@@ -1,7 +1,36 @@
-doctype 5
-html
+doctype html
+html(lang="en", ng-app="mtap-quizmaster")  
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
+
+    title MMC 2014 Math Competition Quiz System
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/bootstrap-theme.min.css')
+    link(rel='stylesheet', href='/css/dashboard.css')
+    link(rel='stylesheet', href='/css/main.css')
+
+    script(type='text/javascript', src="/socket.io/socket.io.js")
+    script(type='text/javascript', src="/js/vendor/jquery-1.10.1.min.js")
+    script(type='text/javascript', src="/js/vendor/angular.min.js")
+    script(type='text/javascript', src="/js/vendor/angular-route.min.js")
+    script(type='text/javascript', src="/js/vendor/bootstrap.min.js")
+    script(type='text/javascript', src="/js/vendor/underscore.js")
+    script(type='text/javascript', src="/js/vendor/paper.js")
+    script(type='text/javascript', src="/js/app.js")
+
   body
+    div(class="navbar navbar-inverse navbar-fixed-top" role="navigation")
+      div(class="container-fluid")
+        div(class="navbar-header")
+          button(type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse")
+            span(class="sr-only") Toggle navigation
+            span(class="icon-bar")
+            span(class="icon-bar")
+            span(class="icon-bar")
+          a(class="navbar-brand" href="/#") MMC 2014 Math Competition Quiz System
+
+        div(class="navbar-collapse collapse")
+          ul(class="nav navbar-nav navbar-right")
+            li 
+              a(href="#") Itemhound
     block content

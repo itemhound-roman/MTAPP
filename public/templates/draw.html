@@ -1,66 +1,33 @@
 <!--<canvas id="myCanvas" height="600" width="800" style="border: 2px solid rgb(0, 0, 0); margin-top: 50px; margin-left: 50px; width: 800px; height: 600px;"></canvas>-->
 
-<div class="container">
+<div class="container" style="margin-left:10px;">
   <div class="row clearfix">
-    <div class="col-md-7 column">
-      <canvas id="myCanvas" height="450" width="600" style="border: 2px solid rgb(0, 0, 0); margin-top: 30px;"></canvas>
+    <div class="col-md-2 column">
+      <h2> {{team_name}} </h2>
     </div>
-    <div class="col-md-4 column">
-      <div class="row clearfix">
-        <div class="col-md-12 column">
-          <h2> {{"Team Name: " + team_name}} </h2>
-        </div>
-      </div>
-      <div class="row clearfix">
-        <div class="col-md-12 column">
-          <h2> {{"Category: " + category_name}} </h2>
-        </div>
-      </div>
-      <div class="row clearfix">
-        <div class="col-md-6 column">
-          <h2> Score: 
-            <label class="label label-info"> {{team_score}} </label>
-          </h2>
-        </div>
-        <div class="col-md-6 column">
-          <h2> Timer: 
-            <label class="label label-danger"> {{countdown_timer}} </label> 
-          </h2>
-        </div>
-      </div>
-      <div class="row clearfix">
-        <div class="col-md-12 column">
-          <br/>        
-          <div class="{{timesupalert_class}}">
-             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-             <strong> Time's Up! </strong>
-            </div>        
-        </div>
-      </div>   
-      <div class="row clearfix">
-        <div class="{{question_wrapper}}">
-          <h2>
-            Question
-          </h2>
-          <h4 class="{{question_class}}">
-            {{quizmaster_question}}
-          </h4>                
-        </div>
-      </div>      
-      <div class="row clearfix">
-        <div class="col-md-12 column">
-          <br/>
-          <div class="{{alert_class}}">
-             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-             <strong> {{alert_message}} </strong>
-          </div>        
-        </div>
-      </div>
-      <div class="row clearfix">
-        <div class="col-md-6 column">
-          <button type="button" class="btn btn-info" ng-click="clearCanvas()">Clear</button>          
-        </div>
-      </div>
+    <div class="col-md-5 column">
+      <h3> {{categoryheader}} </h3>
+    </div>
+    <div class="col-md-2 column">
+      <h3> Score: 
+        <label class="label label-info"> {{team_score}} </label>
+      </h3>
+    </div>
+    <div class="col-md-2 column">
+      <h3> Timer: 
+        <label class="label label-danger"> {{countdown_timer}} </label> 
+      </h3>
+    </div>
+  </div>
+  <div class="row clearfix">
+    <div class="col-md-11 column">
+      <canvas id="myCanvas" height="450" width="1000" class="{{canvas_class}}"></canvas>
+      <!-- {{quizmaster_question}} !-->
+    </div>    
+  </div>
+  <div class="row clearfix"> 
+    <div class="col-md-12 column">
+      <button type="button" class="btn btn-info" ng-click="clearCanvas()">Clear</button>          
     </div>
   </div>
 </div>

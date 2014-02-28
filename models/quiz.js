@@ -1,13 +1,13 @@
 /*
   Mongoose model for Events
-
-
 */
 
 var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 var questionSchema = new Schema({
+  //questionImage   : String ,
+  //  questionNumber  : Number
     questionText    : String
   , answerText      : String
   , questionUsed    : { type: Boolean, default: false }
@@ -21,10 +21,19 @@ var categorySchema = new Schema({
 })
 
 
+var teamSchema = new Schema({
+    teamName  : String
+  , teamScore : {type: Number, default: 0 }
+  , schoolId  : String
+  , active    : {type: Boolean, default: false  }
+})
 
 var quizSchema = new Schema({
     quizName    : String
   , quizCategories : [categorySchema]
+  , teamCount : Number
+  , teams : [teamSchema]
+  , isStopped : {type: Boolean, default:true }
 
 })
 
