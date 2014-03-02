@@ -21,11 +21,6 @@ module.exports = function (socket) {
     socket.broadcast.emit('startTimer', data);
   });
 
-  socket.on('draw:progress', function (data, start, coordinates) {    
-    data.artist = socket.id;
-    socket.broadcast.emit('draw:progress', data)
-  });
-
   socket.on('new-result', function(data){
     console.log("newres");
     console.log(data);
@@ -41,10 +36,22 @@ module.exports = function (socket) {
     socket.broadcast.emit('clearCanvas', data);
   })
 
+  socket.on('refreshPages', function(data){
+    socket.broadcast.emit('refreshPages', data);
+  })
+
+  /*
   socket.on('draw:end', function (data) {    
     data.artist = socket.id;
     socket.broadcast.emit('draw:end', data)
   }); 
+
+  socket.on('draw:progress', function (data, start, coordinates) {    
+    data.artist = socket.id;
+    socket.broadcast.emit('draw:progress', data)
+  });
+
+*/
 
   socket.on('identify', function(data){
     if (data.identity == "quizmaster"){

@@ -1,0 +1,13 @@
+<div ng-hide="quizzes.length">
+  <hr/>
+    <h3> No Quizzes Yet - Grab a coffee and wait for the Quizmaster's Math Problems! </h3>
+  <hr/>
+</div>
+
+
+<h3 ng-repeat="quiz in quizzes">
+  <p> 
+    {{$index + 1}}. {{quiz.quizName}}  
+    <button class='btn btn-info' ng-click="joinContest(quiz._id)"> Join </button>
+  </p>
+</h3>

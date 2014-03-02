@@ -19,7 +19,7 @@ html(lang="en", ng-app="mtap-quizmaster")
     script(type='text/javascript', src="/js/app.js")
 
   body
-    div(class="navbar navbar-inverse navbar-fixed-top" role="navigation")
+    div(class="navbar navbar-fixed-top" role="navigation")
       div(class="container-fluid")
         div(class="navbar-header")
           button(type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse")
@@ -27,10 +27,9 @@ html(lang="en", ng-app="mtap-quizmaster")
             span(class="icon-bar")
             span(class="icon-bar")
             span(class="icon-bar")
-          a(class="navbar-brand" href="/#") MMC 2014 Math Competition Quiz System
+          a(class="navbar-brand" href="#")
+            img(src="/img/mmclogo.png")
 
         div(class="navbar-collapse collapse")
           ul(class="nav navbar-nav navbar-right")
-            li 
-              a(href="#") Itemhound
     block content

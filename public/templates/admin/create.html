@@ -1,0 +1,99 @@
+<div class="row-fluid">
+  <div class="col-md-9">
+    <h2 class="heading"> Create Quiz</h2>
+    <hr>
+    <div class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Quiz Name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control input-lg"  placeholder="Enter Quiz Name" ng-model="quizName" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Number of Participants</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control input-lg"  placeholder="Enter Number of Participants" ng-model="participants" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Seconds per question</label>
+        <div class="col-sm-4">
+          <div class="btn-group">
+            <button class="btn btn-primary" ng-click="addCategory()">Add Category</button>
+            <button class="btn btn-success" ng-click="saveQuiz()">Save Quiz</button>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <h5 class="pull-right">Total Categories: {{categories.length}}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    
+  </div>
+</div>
+<br>
+<div class="row-fluid">
+  <div class="col-md-10">
+    <ul class="media-list " style="margin-top:5px">
+      <li class="media well"  ng-repeat="category in categories">
+        <div class="media-body" >
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Category Name</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control "  placeholder="Enter Category Name" ng-model="category.categoryName">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Seconds per question</label>
+              <div class="col-sm-2">
+                <input type="number" class="form-control" ng-model="category.categoryTime">
+              </div>
+              <label class="col-sm-2 control-label">Points per Question</label>
+              <div class="col-sm-2">
+                <input type="number" class="form-control" ng-model="category.categoryPoints">
+              </div>
+              <div class="col-sm-4">
+                <div class="btn-group">
+                  <button class="btn btn-primary" ng-click="category.addQuestion()">Add Question</button>
+                  <button class="btn btn-danger" ng-click="category.removeCategory()">Remove Category</button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form class="form-horizontal" role="form">
+            <div ng-repeat="question in category.questions">
+              <div class="form-group" >
+                <label class="col-sm-2 control-label">Question no. {{$index + 1}}:</label>
+                <div class="col-sm-7">
+                  <textarea   class="form-control"  placeholder="Enter Question Here" ng-model="question.questionText"></textarea>
+                </div>
+                <div class="col-sm-3">
+                  <button class="btn btn-danger" ng-click="question.removeQuestion()">Delete Question</button>
+                </div>
+              </div>
+              <div class="form-group" >
+                <label class="col-sm-2 control-label">Answer</label>
+                <div class="col-sm-7">
+                  <input type="text"   class="form-control"  placeholder="Enter Answer Here" ng-model="question.answerText">
+                </div>
+              <br>
+            </div>
+
+          </form>
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <div class="col-sm-10 col-sm-offset-2 btn-group">
+                <button class="btn btn-primary" ng-click="category.addQuestion()">Add Question</button>
+                <button class="btn btn-danger" ng-click="category.removeCategory()">Remove Category</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+</div>

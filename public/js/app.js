@@ -51,7 +51,7 @@ app.config(['$routeProvider',
 }]);
 
 
-app.controller('drawCtrl', function ($scope, $http, $routeParams, socket){
+app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket){
 
   //variables
   //need quizName and categoryName
@@ -175,14 +175,24 @@ app.controller('drawCtrl', function ($scope, $http, $routeParams, socket){
     $scope.data = {teamName: teamName};
     $scope.team_name = teamName;
     //find teamname in database;
-    socket.emit('identify', {"identity":"school", "schoolName":teamName, "quizId":quizId})    
+    if(teamName && teamName!= ''){
+      socket.emit('identify', {"identity":"school", "schoolName":teamName, "quizId":quizId})      
+    }
+    
 
     $http.get('/mapi/getTeamData/'+ quizId + '/' + teamName).success(function(matchedTeam){
       if(matchedTeam){
         $scope.team_score = matchedTeam.teamScore;
       }
     })
+  })
 
+  socket.on('refreshPages', function(data){    
+    if(data.quizId == quizId){
+      teamName = '';
+      window.location.reload();
+      //$route.reload();
+    }
   })
   
 
@@ -193,45 +203,48 @@ app.controller('drawCtrl', function ($scope, $http, $routeParams, socket){
     socket.emit('canvasImage', {'dataUrl': dataURL});
   })
 
-  socket.on('new-question', function(data){
+  socket.on('new-question', function(data){ 
 
-    //clear canvas;
-    var canvas = document.getElementById('myCanvas');
-    canvas.width = canvas.width;
-    project.clear();
+    if(data.quizId == quizId){
+      //clear canvas;
+      var canvas = document.getElementById('myCanvas');
+      canvas.width = canvas.width;
+      project.clear();
 
-    //unlock canvas
-    isTimeOut = false;
-    $scope.canvas_class = "black-bordered"
+      //unlock canvas
+      isTimeOut = false;
+      $scope.canvas_class = "black-bordered"
 
 
-    $scope.quizmaster_question = data.questionText;
-    $scope.countdown_timer = data.time;
-    $scope.question_class ="hidden";
-    $scope.alert_class ="hidden";
-    $scope.timesupalert_class = "hidden";
-    $scope.quiz_name = data.quizName;
-    
-    if($scope.countdown_timer == 60){
-      $scope.category_name = "60-Second Round"
+      $scope.quizmaster_question = data.questionText;
+      $scope.countdown_timer = data.time;
+      $scope.question_class ="hidden";
+      $scope.alert_class ="hidden";
+      $scope.timesupalert_class = "hidden";
+      $scope.quiz_name = data.quizName;
+      
+      if($scope.countdown_timer == 60){
+        $scope.category_name = "60-Second Round"
+      }
+      if($scope.countdown_timer == 15){
+        $scope.category_name = "15-Second Round"
+      }
+      if($scope.countdown_timer == 30){
+        $scope.category_name = "30-Second Round"
+      }
+
+      $scope.categoryheader = data.quizName + " : " + $scope.category_name;
     }
-    if($scope.countdown_timer == 15){
-      $scope.category_name = "15-Second Round"
-    }
-    if($scope.countdown_timer == 30){
-      $scope.category_name = "30-Second Round"
-    }
-
-    $scope.categoryheader = data.quizName + " : " + $scope.category_name;
-
   })
 
-  socket.on('startTimer', function(data){
-    $scope.question_class ="";
-    if($scope.countdown_timer == 60){
-      $scope.question_wrapper = "col-md-12 column";      
+  socket.on('startTimer', function(data){    
+    if(data.quizId == quizId){
+      $scope.question_class ="";
+      if($scope.countdown_timer == 60){
+        $scope.question_wrapper = "col-md-12 column";      
+      }    
+      setTimeout(countdownTimer,1000);
     }    
-    setTimeout(countdownTimer,1000);
   })
 
   socket.on('new-result', function(data){
@@ -272,11 +285,14 @@ app.controller('indexCtrl', function ($scope, $http){
 });
 
 window.onbeforeunload = function() {
-  if(window.location.pathname == '/' || window.location.pathname == '/login'){
+
+   
+  if(window.location.hash == '#/' || window.location.pathname == '/login'){
     return;
   }
-  else{
+  else{  
     return 'A quiz is currently ongoing!!!';  
   }
+  
   
 }
