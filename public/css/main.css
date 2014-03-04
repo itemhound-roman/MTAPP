@@ -20,3 +20,45 @@
   margin-left:25%;
   margin-right:25%;
 }
+
+.active-false{
+  background-color: #d9534f;
+}
+
+.active-true{
+  background-color:#5cb85c;
+}
+
+.judges-button{
+  margin-right:35px;
+}
+
+.wrong:before{
+  position:absolute;
+  content:'';
+  background: rgba(255,0,0,0.5);
+  width:400px;
+  height:300px;
+}
+
+.correct:before{
+  position:absolute;
+  content:'';
+  background: rgba(0,255,0,0.5);
+  width:400px;
+  height:300px;
+}
+
+.gary-button{
+  margin-bottom:15px;
+  width:200px;
+  height:50px;
+}
+
+.result-true{
+  background: rgba(0,255,0,0.5);
+}
+
+.result-false{
+  background: rgba(255,0,0,0.5);
+}

@@ -204,6 +204,7 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   })
 
   socket.on('new-question', function(data){ 
+    console.log(data);
 
     if(data.quizId == quizId){
       //clear canvas;
@@ -225,6 +226,7 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
       
       if($scope.countdown_timer == 60){
         $scope.category_name = "60-Second Round"
+        $scope.question_class ="";
       }
       if($scope.countdown_timer == 15){
         $scope.category_name = "15-Second Round"
@@ -238,8 +240,7 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   })
 
   socket.on('startTimer', function(data){    
-    if(data.quizId == quizId){
-      $scope.question_class ="";
+    if(data.quizId == quizId){      
       if($scope.countdown_timer == 60){
         $scope.question_wrapper = "col-md-12 column";      
       }    
@@ -251,16 +252,24 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
     if(data.school === socket.socket.socket.sessionid){
       if(data.correct){
         $scope.team_score = data.score;                
+        /*
         $scope.alert_message = "Correct Answer!";
         $scope.alert_class = "alert alert-success alert-dismissable";     
+        */
 
-        $http.post('/mapi/updateScore', {"quizId":quizId, "teamName":teamName, "teamScore":data.score}).success(function(){
+        $http.post('/mapi/updateScore', {"quizId":quizId, "teamName":teamName, "teamScore":data.score, "correct": true}).success(function(){
 
         });
       }
       else{
+
+        $http.post('/mapi/updateScore', {"quizId":quizId, "teamName":teamName, "teamScore":data.score, "correct": false}).success(function(){
+
+        });
+        /*
         $scope.alert_message = "Wrong Answer!";
         $scope.alert_class = "alert alert-danger alert-dismissable";           
+        */
       }    
     }    
   })

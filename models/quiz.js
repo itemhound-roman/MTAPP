@@ -21,11 +21,26 @@ var categorySchema = new Schema({
 })
 
 
+var questionResultSchema = new Schema({
+    questionNumber : Number
+  , questionChecked : {type: Boolean, default: false}
+  , result : {type: Boolean, default: false}
+})
+
+var categoryResultSchema = new Schema({
+    categoryScore : {type: Number, default: 0}
+  , categoryName : String
+  , categoryNumber : Number
+  , questionResult : [questionResultSchema]
+})
+
+
 var teamSchema = new Schema({
     teamName  : String
   , teamScore : {type: Number, default: 0 }
   , schoolId  : String
   , active    : {type: Boolean, default: false  }
+  , categoryResult : [categoryResultSchema]
 })
 
 var quizSchema = new Schema({
@@ -33,8 +48,7 @@ var quizSchema = new Schema({
   , quizCategories : [categorySchema]
   , teamCount : Number
   , teams : [teamSchema]
-  , isStopped : {type: Boolean, default:true }
-
+  , isStopped : {type: Boolean, default:true } 
 })
 
 
@@ -42,29 +56,3 @@ var quizSchema = new Schema({
 var Quiz = mongoose.model('QuizModel', quizSchema);
 
 exports.QUIZ = Quiz;
-
-// exports.fetchRace = function (params, callback) {
-//   if (params.find.raceId) params.find.raceId = parseInt(params.find.raceId);
-//   params.lean = params.lean || false;
-//   Race.findOne(params.find).populate('owner').setOptions({lean:params.lean}).exec(callback);;
-// };
-
-// exports.createRace = function(params, callback){
-//   if (params.waves){
-//     for (var i = 0; i < params.waves.length; i++ ){
-//       params.waves[i].waveId = (i+1);
-//     }
-//   }
-//   var newRace = new Race(params);
-//   newRace.save(callback);
-// };
-
-// exports.fetchRaces = function(params, callback){  
-//   Race.find(params.find).sort({raceDate:-1}).skip(10*params.pageNum).limit(10).select(params.select).setOptions({lean:true}).exec(callback);
-// }
-
-// exports.deleteRace = function(params, callback){
-//   Race.remove(params).exec(callback);
-// }
-
-// exports.Race = Race; 

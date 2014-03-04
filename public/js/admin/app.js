@@ -70,7 +70,6 @@ app.config(['$routeProvider',
 app.controller('indexCtrl', function ($scope, $http, $location){
   $http.get('/mapi/quiz/')
   .success(function(data){
-    console.log(data);
     $scope.quizzes = data;
   });
 
@@ -98,8 +97,36 @@ app.controller('scoreboardCtrl', function ($scope, $http, $routeParams, socket){
 
   $http.get('/mapi/quiz/'+quizId).success(function(data){
     $scope.quizName = data.quizName;
-    console.log(data);
+    $scope.teams = data.teams;
+    $scope.categories = data.quizCategories        
   });
+
+  $scope.selectCategory = function(categId){
+    if(!categId){
+      $scope.table_category = '';
+      $scope.matchedCategory = null;
+      $scope.showTable = false;
+    }
+    else{
+      $scope.showTable = true;
+      var matchedCategory = _.find($scope.categories, function(category){ return category.categoryName == categId});
+      $scope.table_category = matchedCategory.categoryName;
+      $scope.matchedCategory = matchedCategory;      
+      $scope.teams.map(function(team){
+        team.matchedCategoryResult = team.categoryResult.map(function(categoryResult){
+          if(categoryResult.categoryName == matchedCategory.categoryName){
+            var result = new Object(0);
+            result.questionResult = categoryResult.questionResult;
+            result.categoryScore = categoryResult.categoryScore;
+            return result
+          } 
+        })        
+        return team;        
+      })
+      console.log($scope.teams);
+    }
+    
+  }
 
 });
 
@@ -141,6 +168,7 @@ app.controller('superAdminCtrl', function ($scope, $http, $routeParams, socket){
     console.log(data);
     $scope.quizzes = data;
   });
+
   $scope.resetQuiz = function(quizId){
     console.log(quizId + " reset");
     $http.post('/mapi/reset/' + quizId, {}).success(function(data){
@@ -158,6 +186,117 @@ app.controller('quizmasterCtrl', function ($scope, $http, $routeParams, socket){
   $scope.startTimeButtonDisable = true;
   $scope.hidelabel = false;
 
+  //select question
+/*
+  var addSchool = function(data){  
+  
+    data.currentAnswer = {
+      judged: true
+    };
+
+    data.clearAnswer = function(){
+      socket.emit('clearAllCanvases', {"quizId":quizId});
+      //data.currentAnswer.src = '';
+    }
+    
+    data.acceptAnswer = function(){      
+      this.teamScore += $scope.activeQuestion.points;
+      this.currentAnswer.judged = true;
+      socket.emit('new-result',{
+          school: this.schoolId
+        , correct: true
+        , score: this.teamScore
+      })
+    };
+    
+    data.rejectAnswer = function(){
+      this.currentAnswer.judged = true;
+      socket.emit('new-result',{
+          school: this.schoolId
+        , correct: false
+        , score: this.teamScore
+      })
+    }      
+    $scope.schools.push(data);    
+  }
+  
+  */
+
+  $http.get('/mapi/quiz/'+quizId)
+  .success(function(data){
+    var that = this;
+    if(data.isRunning) $scope.quizStatus = "Running";
+    else $scope.quizStatus="Not Started";    
+    $scope.inviteCode = data.inviteCode;
+    $scope.quizName = data.quizName;
+    $scope.schools = [];
+
+    /*
+    _.each(data.teams, function(team){
+      addSchool(team);
+    });    
+*/
+
+
+    $scope.quiz = data.quizCategories.map(function(category){
+      var secs = category.categoryTime;
+      var points = category.categoryPoints;
+      var categoryId = category._id;
+      var categoryName = category.categoryName;
+      category.questions = category.questions.map(function(question){
+        question.used = question.used || false;
+        question.points = points;
+        question.time = secs;
+        question.categoryId = categoryId;
+        question.categoryName = categoryName;
+        question.select = function(){
+          toggleQuestionsModal();          
+          $scope.activeQuestion = this;
+        }
+        return question;
+      })
+      return category;
+    });
+  });
+
+  var toggleQuestionsModal =  function(){
+    $("#questionsModal").modal('toggle');
+  }
+
+  $scope.selectQuestion = function(){
+    $scope.startTimer_class = "btn btn-danger disabled"
+    toggleQuestionsModal();
+  };
+
+  $scope.activeQuestion = {
+    used: true
+  };
+  
+
+  $scope.sendQuestion = function(){  
+    /*
+    $scope.schools = $scope.schools.map(function(school){
+      school.currentAnswer.src = "/img/no-answer.png"
+      school.currentAnswer.judged = true;
+      return school;
+    })
+*/
+    var toSend = {
+        quizName: $scope.quizName
+      , quizId : quizId
+      , questionText: $scope.activeQuestion.questionText
+      , categoryName : $scope.activeQuestion.categoryName
+      , points : $scope.activeQuestion.points
+      , time   : $scope.activeQuestion.time
+    }
+    $scope.timer = $scope.activeQuestion.time;
+    $scope.startTimer_class = "btn btn-danger "
+    $scope.startTimeButtonDisable = false;
+    socket.emit('new-question',toSend);    
+  }
+  
+
+/*
   socket.on('new-question', function(data){
     $scope.hidelabel = true;
     if(data.quizId == quizId){
@@ -167,8 +306,17 @@ app.controller('quizmasterCtrl', function ($scope, $http, $routeParams, socket){
     }    
   })
 
+  socket.on('startTimer', function(data){
+    if(data.quizId == quizId){
+      $scope.startTimeButtonDisable = true;
+      setTimeout(decrementTimer, 1000);
+    }
+  })
+*/
+
   $scope.startTimer = function(){    
     $scope.startTimeButtonDisable = true;
+    $scope.activeQuestion.used = true;
     socket.emit('startTimer',{'quizId':quizId});
     setTimeout(decrementTimer, 1000);
   }
@@ -247,35 +395,64 @@ app.controller('judgesCtrl', function ($scope, $http, $routeParams, $route, sock
       judged: true
     };
 
+    data.undoHistory = {
+      disabled : true,
+      lastAction : ''
+    }
+
+    data.answer = '';
+
     data.clearAnswer = function(){
       socket.emit('clearAllCanvases', {"quizId":quizId});
       //data.currentAnswer.src = '';
     }
     
-    data.acceptAnswer = function(){      
+    data.acceptAnswer = function(){          
       this.teamScore += $scope.activeQuestion.points;
-      this.currentAnswer.judged = true;
+      this.currentAnswer.judged = true;      
+      this.undoHistory.disabled = false;
+      this.undoHistory.lastAction = 'accept';
+      this.answer = 'correct';      
       socket.emit('new-result',{
           school: this.schoolId
         , correct: true
         , score: this.teamScore
       })
-    };
+    }
     
     data.rejectAnswer = function(){
       this.currentAnswer.judged = true;
+      this.undoHistory.disabled = false;
+      this.answer = 'wrong';
+      this.undoHistory.lastAction = 'reject';
       socket.emit('new-result',{
           school: this.schoolId
         , correct: false
         , score: this.teamScore
       })
+    }
+
+    data.undoChecking = function(){
+      this.currentAnswer.judged = false;
+      this.undoHistory.disabled = true;
+      this.answer = '';
+      if(this.undoHistory.lastAction == 'accept'){
+        this.teamScore -= $scope.activeQuestion.points;
+        socket.emit('new-result',{
+            school: this.schoolId
+          , correct: true  
+          , score: this.teamScore
+        })
+      }
+      
+      //get last team score from database;
     }      
+
     $scope.schools.push(data);    
   }
 
   $http.get('/mapi/quiz/'+quizId)
-  .success(function(data){
-    console.log(data);
+  .success(function(data){    
     var that = this;
     if(data.isRunning) $scope.quizStatus = "Running";
     else $scope.quizStatus="Not Started";    
@@ -295,7 +472,7 @@ app.controller('judgesCtrl', function ($scope, $http, $routeParams, $route, sock
         question.used = question.used || false;
         question.points = points;
         question.time = secs;
-        question.categoryId = categoryId;
+        question.categoryId = categoryId;        
         question.select = function(){
           toggleQuestionsModal();
           $scope.activeQuestion = this;
@@ -336,6 +513,42 @@ app.controller('judgesCtrl', function ($scope, $http, $routeParams, $route, sock
       $scope.allowJudging();
     }
   });
+
+
+  socket.on('new-result', function(data){    
+    console.log($scope.schools);
+    if(data.correct){
+      _.each($scope.schools, function(school){
+        if(school.schoolId == data.school){
+          school.currentAnswer.judged = true;
+          school.teamScore = data.score;
+          //school.acceptAnswer();
+        }
+      })
+    }
+    
+
+  });
+
+  socket.on('new-question', function(data){
+    if(data.quizId == quizId){
+      $scope.activeQuestion.questionText = data.questionText;
+      $scope.activeQuestion.points = data.points;
+      $scope.activeQuestion.time = data.time;
+      $scope.timer = data.time;
+      //$scope.activeQuestion
+    }
+    clearJudgesCanvas();
+  });
+
+  var clearJudgesCanvas = function(){
+    $scope.schools = $scope.schools.map(function(school){
+      school.currentAnswer.src = "/img/no-answer.png";
+      school.currentAnswer.judged = true;
+      school.answer = '';
+      return school;
+    });
+  }
 
   var decrementTimer = function(){
     if ($scope.timer > 0) {
@@ -394,18 +607,16 @@ app.controller('createCtrl', function ($scope, $http, socket){
   $scope.categories = [];
   //$scope.quizname = "";
   $scope.saveQuiz = function(){
-    console.log($scope.categories);
     var obj = {
         quizName : $scope.quizName
       , quizCategories : $scope.categories
       , teamCount : $scope.participants
     }
-    console.log(obj);
     $http.post('/mapi/quiz/', {"obj":obj}).success(function(){
-        alert('Successfully uploaded Quiz')
-      }).error(function(){
-        alert('Failed to upload Quiz');
-      })
+      alert('Successfully uploaded Quiz')
+    }).error(function(){
+      alert('Failed to upload Quiz');
+    })
   },
   $scope.addCategory = function(){
     $scope.categories.push({
@@ -414,12 +625,12 @@ app.controller('createCtrl', function ($scope, $http, socket){
       , categoryTime : 60
       , questions : []
       , removeCategory : function(){
-            for (var i = 0; i < $scope.categories.length; i++){
-              if ($scope.categories[i].categoryHash == this.categoryHash){
-                $scope.categories.splice(i,1);
-                break;
-              }
-            }
+        for (var i = 0; i < $scope.categories.length; i++){
+          if ($scope.categories[i].categoryHash == this.categoryHash){
+            $scope.categories.splice(i,1);
+            break;
+          }
+        }
       }
       , addQuestion : function(){
         this.questions.push({
@@ -427,7 +638,6 @@ app.controller('createCtrl', function ($scope, $http, socket){
           , questionHash : Date.now()
           , questionText : ""
           , answerText   : ""
-          //, questionNumber : $index
           , removeQuestion : function(){
             for (var i = 0; i < $scope.categories.length; i++){
               if ($scope.categories[i].categoryHash == this.categoryHash){
@@ -442,11 +652,7 @@ app.controller('createCtrl', function ($scope, $http, socket){
             }
           }
         })
-
       }
     })
   }
-  
-   
-
 });

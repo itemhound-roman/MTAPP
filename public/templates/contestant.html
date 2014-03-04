@@ -1,13 +1,29 @@
-<div ng-hide="quizzes.length">
+<div ng-hide="quizzes.length">  
   <hr/>
     <h3> No Quizzes Yet - Grab a coffee and wait for the Quizmaster's Math Problems! </h3>
   <hr/>
 </div>
 
+<div class="row clearfix" style="margin-left:10px;">
+  <div class="col-md-12 column">
+    <a href="/#">
+      <img src="/img/mmclogo.png" style="margin-top:10px;"></img>
+    </a>
+  </div>
+</div>
+
 
 <h3 ng-repeat="quiz in quizzes">
-  <p> 
-    {{$index + 1}}. {{quiz.quizName}}  
-    <button class='btn btn-info' ng-click="joinContest(quiz._id)"> Join </button>
-  </p>
+  <div style="margin-top:50px;" class="row clearfix">
+    <div class="col-md-2 col-md-offset-1 column">      
+      <p> 
+        {{$index + 1}}. {{quiz.quizName}}  
+      </p>
+    </div>
+    <div class="col-md-5 column">
+      <p>
+        <button class='btn btn-info' ng-click="joinContest(quiz._id)"> Join </button>
+      </p>
+    </div>
+  </div>
 </h3>

@@ -1,17 +1,29 @@
-<div ng-hide="quizzes.length">
-  <hr/>
-    <h3> No Quizzes Yet
-      <a href="#/create" class='btn btn-lg btn-info'> Create </a>
-    </h3>
-  <hr/>
-</div>
+<div class="row clearfix">
+  <div class="col-md-12 column">
+    <div ng-hide="quizzes.length">
+      <hr/>
+        <h3> No Quizzes Yet
+          <a href="#/create" class='btn btn-lg btn-info'> Create </a>
+        </h3>
+      <hr/>
+    </div>
 
-<h3 ng-repeat="quiz in quizzes">  
-  <p> 
-    {{$index + 1}}. {{quiz.quizName}}  
-    <button class='btn btn-info' ng-click="joinContest(quiz._id)"> Judge </button>
-    <button class='btn btn-info' ng-click="quizMaster(quiz._id)"> QuizMaster </button>
-    <button class='btn btn-info' ng-click="timerRedirect(quiz._id)"> Timer </button>
-    <button class='btn btn-info' ng-click="scoreboard(quiz._id)"> Scoreboard</button>
-  </p>
-</h3>
+    <h3 ng-repeat="quiz in quizzes">  
+      <div class="row clearfix">
+        <div class="col-md-2 column">
+          <p> 
+            {{$index + 1}}. {{quiz.quizName}}  
+          </p>
+        </div>
+        <div class="col-md-6 column">
+          <p>      
+            <button class='btn btn-info' ng-click="joinContest(quiz._id)"> Judge </button>
+            <button class='btn btn-info' ng-click="quizMaster(quiz._id)"> QuizMaster </button>
+            <button class='btn btn-info' ng-click="timerRedirect(quiz._id)"> Timer </button>
+            <button class='btn btn-info' ng-click="scoreboard(quiz._id)"> Scoreboard</button>
+          </p>
+        </div>
+      </div>
+    </h3>
+  </div>
+</div>

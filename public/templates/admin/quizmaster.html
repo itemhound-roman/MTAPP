@@ -1,7 +1,75 @@
-<div>
-  <h3 ng-hide="hidelabel"> Waiting for question from the judges </h3>
+<div style="margin-top:40px;">
+  <!--<h3 ng-hide="hidelabel"> Waiting for question from the judges </h3>
   <h3>TIME: <span class="label label-danger label-large">{{timer}}</span></h3>
   <h3> {{"Question: " +  question_text}} <h3>
-  <button class="btn btn-large btn-info" ng-disabled="startTimeButtonDisable" ng-click="startTimer()">Start Timer</button>
+  <button class="btn btn-large btn-info" ng-disabled="startTimeButtonDisable" ng-click="startTimer()">Start Timer</button>-->
 
 </div>
+
+<div class="row">
+  <div class="col-md-2">
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-primary gary-button" ng-click="selectQuestion()">Select Question</button>
+        </div>        
+        <div class="col-md-12">
+          <button class="btn btn-danger gary-button" ng-disabled="activeQuestion.used" ng-click="sendQuestion()">Send question</button>
+        </div>
+        <div>
+        <div class="col-md-12">
+          <button class="btn btn-large btn-info gary-button" ng-disabled="startTimeButtonDisable" ng-click="startTimer()">Start Timer</button>
+        </div>
+        <div class="col-md-12">
+          <button class="btn btn-large btn-primary gary-button">Update Scores</button>
+        </div>
+      </div>
+      <!--<button class="{{startTimer_class}} " ng-disabled="activeQuestion.used" ng-click="startTimer()">Start Timer</button>-->
+    </div>
+  </div>
+  <div class="col-md-6">
+    <p><strong>Question: {{activeQuestion.questionText}}</strong></p>
+    Answer: {{activeQuestion.answerText}}
+  </div>
+  <div class="col-md-2">
+    Time: {{activeQuestion.time}} 
+    <br> 
+    Points: {{activeQuestion.points}}
+    <b4>
+    <h3>TIME: <span class="label label-danger label-large">{{timer}}</span></h3>
+  </div>
+  
+</div>
+<br>
+
+<div id="questionsModal" class="modal bs-modal-lg" role="dialog" >
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h5 class="modal-title">Select Question</h5>
+      </div>
+      <div class="modal-body">
+        <div ng-repeat="category in  quiz" class="form-horizontal" name="newRewardForm" novalidate>
+          <h3 class="text-center">{{category.categoryName}}</h3>
+          <ul class="media-list">
+            <li class="media" ng-repeat="question in category.questions">
+              <div ng-hide="question.used" class="panel">
+                <a class="btn btn-primary pull-left" ng-click="question.select()"  style="margin-right:15px;">
+                  Select
+                </a>
+                <div class="media-body">
+                  {{question.questionText}}
+                </div>
+              </div>
+            </li>
+          </ul>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!--<button type="button" class="btn btn-primary" ng-click="save()">Save changes</button>-->
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

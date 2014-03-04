@@ -1,5 +1,7 @@
 <div class="row">
   <h2 class="heading col-md-6">{{quizName}}</h2>
+  <h2 class="col-md-6"> TIMER: <span class="label label-danger label-lg"> {{timer}}</span></h3>
+  </h2>
   <!--
   <div class="form-horizontal pull-right col-md-6">
     <div class="form-group">
@@ -11,13 +13,12 @@
   </div>
   !-->
 </div>
-
+<!--
 <div class="row">
   <div class="col-md-2">
     <div class="btn-group-vertical">
       <button class="btn btn-primary" ng-click="selectQuestion()">Select Question</button>
       <button class="btn btn-danger " ng-disabled="activeQuestion.used" ng-click="sendQuestion()">Send question</button>
-      <!--<button class="{{startTimer_class}} " ng-disabled="activeQuestion.used" ng-click="startTimer()">Start Timer</button>-->
     </div>
   </div>
   <div class="col-md-6">
@@ -36,18 +37,34 @@
 <br>
 
 <div class="row">
+  <div class="col-md-6">
+    <h3> TIMER: <span class="label label-danger label-lg"> {{timer}}</span></h3>
+  </div>
+</div>
+<br/>
+-->
+<div class="row">
   <div class="col-md-4" ng-repeat="school in schools">
     <br/>
-    <h4>{{school.teamName}} - <span class="badge">{{school.teamScore}}</span> - <span class="label label-default">{{"Connected: " + school.active}}</h4>
-      <img class="img text-center " height="300px" width="400px" style="border: 2px solid rgb(67, 0, 0);" ng-src="{{school.currentAnswer.src}}"> 
-    <!--<canvas id="canvas{{school.schoolId}}" height="300" width="400" style="border: 2px solid rgb(67, 0, 0); width:400px; height:300px; "></canvas>-->
-    <div class="btn-group">
-      <a ng-disabled="school.currentAnswer.judged" class="btn btn-success btn-sm" ng-click='school.acceptAnswer()'>
-        Accept
-      </a>
-      <a ng-disabled="school.currentAnswer.judged"  class="btn btn-danger btn-sm" ng-click='school.rejectAnswer()'>
-        Reject
-      </a>
+    <div style="margin-top:40px;">
+      <h3>{{school.teamName}} - <span class="label label-default">{{school.teamScore}}</span> - <span class="{{'label label-default active-' + school.active }}">{{"Connected: " + school.active}}</h3>
+        <div class="{{school.answer}}">          
+          <img class="{{'img text-center ' + school.answer}}" height="300px" width="400px" style="border: 2px solid rgb(67, 0, 0);" ng-src="{{school.currentAnswer.src}}"> 
+        </div>
+      <!--<canvas id="canvas{{school.schoolId}}" height="300" width="400" style="border: 2px solid rgb(67, 0, 0); width:400px; height:300px; "></canvas>-->
+      <div class="btn judges-button">
+        <a ng-disabled="school.currentAnswer.judged" class="btn btn-success btn-lg" ng-click='school.acceptAnswer()'>
+          Accept
+        </a>
+      </div>
+      <div class="btn judges-button">
+        <a ng-disabled="school.undoHistory.disabled" class="btn btn-default btn-lg" ng-click="school.undoChecking()"> Undo </a>
+      </div>
+      <div class="btn judges-button">
+        <a ng-disabled="school.currentAnswer.judged"  class="btn btn-danger btn-lg" ng-click='school.rejectAnswer()'>
+          Reject
+        </a>
+      </div> 
     </div>
   </div>
 </div>

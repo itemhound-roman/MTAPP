@@ -3,31 +3,40 @@
 <div class="container" style="margin-left:10px;">
   <div class="row clearfix">
     <div class="col-md-2 column">
+      <a href="#">
+        <img src="/img/mmclogo.png" style="margin-top:15px;"> </img>
+      </a>
+    </div>
+    <div class="col-md-2 column">
       <h2> {{team_name}} </h2>
     </div>
-    <div class="col-md-5 column">
-      <h3> {{categoryheader}} </h3>
+    <div class="col-md-4 column">
+      <h2> {{categoryheader}} </h2>
     </div>
     <div class="col-md-2 column">
-      <h3> Score: 
+      <h2> Score: 
         <label class="label label-info"> {{team_score}} </label>
-      </h3>
+      </h2>
     </div>
     <div class="col-md-2 column">
-      <h3> Timer: 
+      <h2> Timer: 
         <label class="label label-danger"> {{countdown_timer}} </label> 
-      </h3>
+      </h2>
     </div>
   </div>
   <div class="row clearfix">
-    <div class="col-md-11 column">
-      <canvas id="myCanvas" height="450" width="1000" class="{{canvas_class}}"></canvas>
-      <!-- {{quizmaster_question}} !-->
-    </div>    
+    <div class="col-md-12 column">
+      <canvas id="myCanvas" height="450" width="1200" class="{{canvas_class}}"></canvas>    
+    </div>
   </div>
   <div class="row clearfix"> 
     <div class="col-md-12 column">
       <button type="button" class="btn btn-info" ng-click="clearCanvas()">Clear</button>          
+    </div>
+  </div>
+  <div class="row-clearfix">
+    <div class="col-md-12 column">
+      <h3 class="{{question_class}}"> {{quizmaster_question}}</h3>
     </div>
   </div>
 </div>
