@@ -1,19 +1,18 @@
 <!--<canvas id="myCanvas" height="600" width="800" style="border: 2px solid rgb(0, 0, 0); margin-top: 50px; margin-left: 50px; width: 800px; height: 600px;"></canvas>-->
 
+
 <div class="container" style="margin-left:10px;">
   <div class="row clearfix">
     <div class="col-md-2 column">
-      <a href="#">
-        <img src="/img/mmclogo.png" style="margin-top:15px;"> </img>
-      </a>
+      <img src="/img/mmclogo.png" style="margin-top:15px;"> </img>
     </div>
-    <div style='margin-top:10px;' class="col-md-3 column">
-      <h4> {{team_name + ":"}}
+    <div style='margin-top:5px;' class="col-md-3 column">
+      <h3> {{team_name + ":"}}
         <select ng-model="region" ng-options="r.name for r in regions"></select>
-      </h4>
+      </h3>
     </div>
     <div style='margin-top:10px;' class="col-md-3 column">
-      <h4> {{categoryheader}} </h4>
+      <h3> {{categoryheader}} </h3>
     </div>
     <div class="col-md-2 column">
       <h2> Score: 
@@ -28,20 +27,19 @@
   </div>
   <div class="row clearfix">
     <div class="col-md-12 column">
-      <canvas id="myCanvas" height="450" width="1200" class="{{canvas_class}}"></canvas>    
+      <canvas id="myCanvas" height="500" width="1400" class="{{canvas_class}}"></canvas> 
     </div>
   </div>
   <div class="row clearfix"> 
     <div class="col-md-12 column">
-      <button type="button" class="btn btn-info" ng-click="clearCanvas()">Clear</button>
+      <button type="button" class="btn btn-primary canvas-button" ng-click="clearCanvas()">Clear</button>
       &nbsp; &nbsp;
-      <button ng-show='doOrDieMode' type="button" class="btn btn-info" ng-click="sendCanvas()"> Send </button>
+      <button ng-disabled="disableSendCanvas" ng-show='doOrDieMode' type="button" class="btn btn-success canvas-button" ng-click="sendCanvas()"> Send </button>
     </div>
   </div>
   <div class="row-clearfix">
     <div class="col-md-12 column">
-      <img class="{{question_class}}" style='margin-top:0px; height:130px;' src="{{'/img/questions/' + quizmaster_image }}">
-      <!--<h3 class="{{question_class}}"> {{quizmaster_question}}</h3>-->
+      <img class="{{question_class}}" style='margin-top:0px; height:130px;' src="{{'/img/questions/' + quizmaster_image}}">
     </div>
   </div>
 </div>

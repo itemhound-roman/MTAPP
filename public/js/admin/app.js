@@ -93,12 +93,21 @@ app.controller('indexCtrl', function ($scope, $http, $location){
 
 app.controller('scoreboardCtrl', function ($scope, $http, $routeParams, socket){
   var quizId = $routeParams.quizId;
+  $scope.showSummary = true;
 
   socket.on('update-result', function(data){
     getScores(function(){
       selectCategory(data.categoryName);
     });
   });
+
+  socket.on('refreshPages', function(data){    
+    if(data.quizId == quizId){
+      $scope.showSummary = true;
+      window.location.reload();
+      //$route.reload();
+    }
+  })
   
   var getScores = function(callback){
     $http.get('/mapi/quiz/'+quizId).success(function(data){
@@ -116,8 +125,10 @@ app.controller('scoreboardCtrl', function ($scope, $http, $routeParams, socket){
       $scope.table_category = '';
       $scope.matchedCategory = null;
       $scope.showTable = false;
+      $scope.showSummary = true;
     }
     else{      
+      $scope.showSummary = false;
       $scope.showTable = true;
       $scope.table_category = categId;
 
@@ -158,7 +169,7 @@ app.controller('timerDisplayCtrl', function ($scope, $http, $routeParams, socket
 
   var decrementTimer = function(){
     if ($scope.timer > 0) {
-      if($scope.timer == 1 || $scope.timer == 2 || $scope.timer == 3){
+      if($scope.timer == 1 || $scope.timer == 2 || $scope.timer == 3 || $scope.timer == 4 || $scope.timer == 5){
         document.getElementById('audiobeep').play();    
       }
       $scope.timer--;
@@ -311,7 +322,7 @@ app.controller('quizmasterCtrl', function ($scope, $http, $route, $routeParams, 
     console.log(data.schoolName);        
     if(quizId == data.quizId){
       _.each($scope.schools, function(school){
-        if(school.teamName == data.schoolName){e
+        if(school.teamName == data.schoolName){
           school.active = true;
           school.schoolId = data.schoolId;
         }

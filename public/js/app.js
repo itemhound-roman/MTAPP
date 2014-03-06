@@ -64,64 +64,55 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   var tool = new Tool();
   tool.minDistance = 2;
   tool.maxDistance = 15;
-
-  var external_paths = {};
-  var start = {};
-  var path = {};
-
+  var path;
+  
   tool.onMouseDown = function(event) {
-    path = new Path();
-    path.strokeColor = 'black';
-    path.strokeWidth = 5;
-    path.add(event.point);
-    start.start = event.point;
+    if(!isTimeOut){
+      if (path) {
+        path.selected = false;
+      }
+
+      path = new Path();
+      path.strokeWidth = 6;
+      path.strokeColor = 'black';      
+    }
   }
 
   tool.onMouseDrag = function(event) {
     if( !isTimeOut ){
-      var uid = socket.socket.sessionid;
-      
-      var top = new Point({
-          x: event.middlePoint.x
-        , y: event.middlePoint.y
-      })  
-      var bottom = new Point({
-          x: event.middlePoint.x
-        , y: event.middlePoint.y
-      })      
-
-      path.add(top);
-      path.insert(0, bottom);
-      //path.smooth();
+      path.add(event.point);  
     }
   }
 
+  tool.onMouseUp = function(event) {
+    if( !isTimeOut ){
+      path.smooth();    
+    }
+  }
+  
   tool.onMouseOut = function(event){
     if( !isTimeOut ){
-      path.add(event.point);
-      path.closed = false;
-      //path.smooth();
-      var end = event.point;
-      var dataToEmit = {end:end};
-      var uid = socket.socket.sessionid;
-      socket.emit('draw:end', dataToEmit); 
+      path.smooth();
     }
-  }  
-
-  tool.onMouseUp = function(event){
-    if( !isTimeOut ){
-      path.add(event.point);
-      path.closed = false;
-      //path.smooth();
-      var end = event.point;
-    }
-  }  
+  }
+  
 
   var clearCanvas = function(data){
     if(data.quizId == quizId){
-      var canvas = document.getElementById('myCanvas');
-      canvas.width = canvas.width;
-      project.clear();      
+      
+      var canvas = document.getElementById('myCanvas');      
+      context = canvas.getContext("2d");
+
+      var o = document.getElementById('myCanvas');
+      var l =o.offsetLeft; var t = o.offsetTop;
+      while (o=o.offsetParent)
+        l += o.offsetLeft;
+      o = document.getElementById('myCanvas');
+      while (o=o.offsetParent)
+        t += o.offsetTop;
+
+      context.clearRect(l,t, canvas.width,canvas.height);
+      project.clear();
     }    
   }
 
@@ -129,13 +120,8 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
     var canvas = document.getElementById('myCanvas');
     var dataURL = canvas.toDataURL();
     socket.emit('canvasImage', {'dataUrl': dataURL});
-    //team name. question number. 
-    
     $http.post('/uploadImage/', {"imgBase64":dataURL,"quizName":$scope.quiz_name,"category":$scope.category_name,"teamName":teamName}).success(function(){
-
     });
-
-
   }
 
   var countdownTimer = function(){
@@ -153,7 +139,8 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
     }
   }
 
-  //data bindings
+  //data bindings  
+  $scope.disableSendCanvas = false;
   $scope.question_class ="hidden";
   $scope.team_score = 0;
   $scope.countdown_timer = 0;
@@ -176,13 +163,25 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   $scope.region = $scope.regions[0]; // red
 
   $scope.sendCanvas = function(){
+    $scope.disableSendCanvas = true;
     sendCanvas();
   }
 
   $scope.clearCanvas = function(){  
     if( !isTimeOut ){  
+      $scope.disableSendCanvas = false;
       var canvas = document.getElementById('myCanvas');
-      canvas.width = canvas.width;
+      var context = canvas.getContext('2d');
+
+      var o = document.getElementById('myCanvas');
+      var l =o.offsetLeft; var t = o.offsetTop;
+      while (o=o.offsetParent)
+        l += o.offsetLeft;
+      o = document.getElementById('myCanvas');
+      while (o=o.offsetParent)
+        t += o.offsetTop;
+
+      context.clearRect(l,t,canvas.width, canvas.height);
       project.clear();
     }
   }
@@ -227,11 +226,8 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   socket.on('new-question', function(data){ 
     console.log(data);
 
-    if(data.quizId == quizId){
-      //clear canvas;
-      var canvas = document.getElementById('myCanvas');
-      canvas.width = canvas.width;
-      project.clear();
+    if(data.quizId == quizId){  
+      clearCanvas(data);
 
       //unlock canvas
       isTimeOut = false;
@@ -253,7 +249,7 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
       $scope.category_name = data.categoryName;
 
       if (data.time == 60){
-        $scope.question_class ="";
+        $scope.question_class ="";        
       }
       else{
         $scope.question_class ="hidden";

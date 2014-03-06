@@ -16,10 +16,11 @@
       </div>
       <div class="row clearfix">
         <div class="col-md-11 col-md-offset-1 column">
-          <table class="table table-hover table-bordered" style="width:700px">
+          <table class="table table-hover table-condensed table-bordered" style="width:900px">
             <thead>
               <tr>
                 <th> Team Number </th>
+                <th ng-show="showSummary"> Summary </th>
                 <th ng-show="showTable"> {{table_category}} </th>
                 <th> Total Score </th>
               </tr>
@@ -27,9 +28,22 @@
             <tbody>
               <tr ng-repeat="team in teams">
                 <td> {{team.teamName}} </td>
+                <td style="width:500px;" ng-show='showSummary'>
+                  <table style="margin-bottom:0px;" class="table table-condensed table-bordered fixed-width">
+                    <tr>
+                      <td ng-repeat="category in team.categoryResult">
+                        {{category.categoryName}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td ng-repeat="category in team.categoryResult">
+                        <strong> {{category.categoryScore}} </strong>
+                      </td>
+                    </tr>
+                  </table>
                 <td style="width:500px;" ng-show="showTable">
-                  <table style="margin-bottom:0px;" class='table table-bordered fixed-width'>
-                      <td class="{{'td-'+ $index%2}}" style="height:20px;" ng-repeat='score in team.matchedCategory.questionResults track by $index'> 
+                  <table style="margin-bottom:0px;" class='table table-condensed table-bordered fixed-width'>
+                      <td style="height:20px;" ng-repeat='score in team.matchedCategory.questionResults track by $index'> 
                         <div ng-show="score.questionChecked">
                           {{score.score}}
                         </div>
