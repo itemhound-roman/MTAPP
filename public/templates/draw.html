@@ -7,11 +7,13 @@
         <img src="/img/mmclogo.png" style="margin-top:15px;"> </img>
       </a>
     </div>
-    <div class="col-md-2 column">
-      <h2> {{team_name}} </h2>
+    <div style='margin-top:10px;' class="col-md-3 column">
+      <h4> {{team_name + ":"}}
+        <select ng-model="region" ng-options="r.name for r in regions"></select>
+      </h4>
     </div>
-    <div class="col-md-4 column">
-      <h2> {{categoryheader}} </h2>
+    <div style='margin-top:10px;' class="col-md-3 column">
+      <h4> {{categoryheader}} </h4>
     </div>
     <div class="col-md-2 column">
       <h2> Score: 
@@ -31,12 +33,15 @@
   </div>
   <div class="row clearfix"> 
     <div class="col-md-12 column">
-      <button type="button" class="btn btn-info" ng-click="clearCanvas()">Clear</button>          
+      <button type="button" class="btn btn-info" ng-click="clearCanvas()">Clear</button>
+      &nbsp; &nbsp;
+      <button ng-show='doOrDieMode' type="button" class="btn btn-info" ng-click="sendCanvas()"> Send </button>
     </div>
   </div>
   <div class="row-clearfix">
     <div class="col-md-12 column">
-      <h3 class="{{question_class}}"> {{quizmaster_question}}</h3>
+      <img class="{{question_class}}" style='margin-top:0px; height:130px;' src="{{'/img/questions/' + quizmaster_image }}">
+      <!--<h3 class="{{question_class}}"> {{quizmaster_question}}</h3>-->
     </div>
   </div>
 </div>

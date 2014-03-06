@@ -1,9 +1,5 @@
 <div style="margin-top:40px;">
-  <!--<h3 ng-hide="hidelabel"> Waiting for question from the judges </h3>
-  <h3>TIME: <span class="label label-danger label-large">{{timer}}</span></h3>
-  <h3> {{"Question: " +  question_text}} <h3>
-  <button class="btn btn-large btn-info" ng-disabled="startTimeButtonDisable" ng-click="startTimer()">Start Timer</button>-->
-
+  <h3>{{quizName}}</h3>
 </div>
 
 <div class="row">
@@ -18,14 +14,11 @@
         <div>
         <div class="col-md-12">
           <button class="btn btn-large btn-info gary-button" ng-disabled="startTimeButtonDisable" ng-click="startTimer()">Start Timer</button>
-        </div>
-        <div class="col-md-12">
-          <button class="btn btn-large btn-primary gary-button">Update Scores</button>
-        </div>
-      </div>
-      <!--<button class="{{startTimer_class}} " ng-disabled="activeQuestion.used" ng-click="startTimer()">Start Timer</button>-->
+        </div>       
+      </div>      
     </div>
   </div>
+
   <div class="col-md-6">
     <p><strong>Question: {{activeQuestion.questionText}}</strong></p>
     Answer: {{activeQuestion.answerText}}
@@ -38,6 +31,26 @@
     <h3>TIME: <span class="label label-danger label-large">{{timer}}</span></h3>
   </div>
   
+</div>
+
+<div class="row">
+  <div class="col-md-4 column">  
+    <h3> Scores to Send </h3>
+    <form name="scoreTickList">
+      <h5 ng-repeat='team in teams'>      
+         {{team.teamName}} - <input style="margin-top:10px; width:40px;" ng-model='team.score'> 
+      </h5>
+    </form>
+    <button class="btn btn-large btn-info gary-button" ng-disabled="disableUpdate" ng-click="updateScoreboard()">Update Scores</button>
+    <h3 ng-hide="isUpdated"> Scores Sent! </h3>
+  </div>
+  <div class="col-md-4" ng-repeat="school in schools">
+    <h4>{{school.teamName}} - <span class="label label-default">{{school.teamScore}}</span> - <span class="{{'label label-default active-' + school.active }}">{{"Connected: " + school.active}}</span> - <span ng-show='doOrDieMode' class="label label-default">{{school.timeReceived}}</span></h4>        
+    <div class="{{school.answer}}">          
+      <img class="{{'img text-center ' + school.answer}}" height="300px" width="400px" style="border: 2px solid rgb(67, 0, 0);" ng-src="{{school.currentAnswer.src}}"> 
+    </div>
+    
+  </div>
 </div>
 <br>
 
@@ -63,13 +76,10 @@
               </div>
             </li>
           </ul>
-
-
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <!--<button type="button" class="btn btn-primary" ng-click="save()">Save changes</button>-->
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>        
       </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    </div>
+  </div>
+</div>

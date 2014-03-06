@@ -147,15 +147,10 @@ app.post('/uploadImage', function(req, res){
   });
 })
 
-
 app.post('*', function (req, res) {
   console.log(JSON.stringify(req.body))
   res.redirect(req.url);
 });
-
-
-// app.get('/', routes.index);
-// app.get('/users', user.list);
 
 var server = http.createServer(app);
 

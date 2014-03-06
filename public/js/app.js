@@ -154,9 +154,30 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   }
 
   //data bindings
+  $scope.question_class ="hidden";
   $scope.team_score = 0;
   $scope.countdown_timer = 0;
   $scope.canvas_class = "red-bordered"
+  $scope.doOrDieMode = false;
+  $scope.regions = [
+      {name: 'Region 1'},
+      {name: 'Region 2'},
+      {name: 'Region 3'},
+      {name: 'Region 4'},
+      {name: 'Region 5'},
+      {name: 'Region 6'},
+      {name: 'Region 7'},
+      {name: 'Region 8'},
+      {name: 'Region 9'},
+      {name: 'Region 10'},
+      {name: 'Region 11'},
+      {name: 'Region 12'},
+    ];
+  $scope.region = $scope.regions[0]; // red
+
+  $scope.sendCanvas = function(){
+    sendCanvas();
+  }
 
   $scope.clearCanvas = function(){  
     if( !isTimeOut ){  
@@ -216,14 +237,28 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
       isTimeOut = false;
       $scope.canvas_class = "black-bordered"
 
+      if(data.categoryName == 'Do or Die'){
+        console.log("DO OR DIE");
+        $scope.doOrDieMode = true;
+      }
+
 
       $scope.quizmaster_question = data.questionText;
+      $scope.quizmaster_image = data.questionImage;
       $scope.countdown_timer = data.time;
       $scope.question_class ="hidden";
       $scope.alert_class ="hidden";
       $scope.timesupalert_class = "hidden";
       $scope.quiz_name = data.quizName;
-      
+      $scope.category_name = data.categoryName;
+
+      if (data.time == 60){
+        $scope.question_class ="";
+      }
+      else{
+        $scope.question_class ="hidden";
+      }
+      /*
       if($scope.countdown_timer == 60){
         $scope.category_name = "60-Second Round"
         $scope.question_class ="";
@@ -234,6 +269,7 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
       if($scope.countdown_timer == 30){
         $scope.category_name = "30-Second Round"
       }
+      */
 
       $scope.categoryheader = data.quizName + " : " + $scope.category_name;
     }
@@ -249,13 +285,10 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   })
 
   socket.on('new-result', function(data){
+    /*
     if(data.school === socket.socket.socket.sessionid){
       if(data.correct){
         $scope.team_score = data.score;                
-        /*
-        $scope.alert_message = "Correct Answer!";
-        $scope.alert_class = "alert alert-success alert-dismissable";     
-        */
 
         $http.post('/mapi/updateScore', {"quizId":quizId, "teamName":teamName, "teamScore":data.score, "correct": true}).success(function(){
 
@@ -266,14 +299,24 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
         $http.post('/mapi/updateScore', {"quizId":quizId, "teamName":teamName, "teamScore":data.score, "correct": false}).success(function(){
 
         });
-        /*
-        $scope.alert_message = "Wrong Answer!";
-        $scope.alert_class = "alert alert-danger alert-dismissable";           
-        */
+
       }    
+    } 
+    */   
+  })
+
+  socket.on('update-result', function(data){
+    if(quizId == data.quizId){
+      var scoreArray = data.scores;
+      _.each(scoreArray, function(score){
+        if(score.teamName == teamName){
+          $scope.team_score += parseInt(score.score);
+        }
+     })  
     }    
   })
 });
+
 
 
 app.controller('contestantCtrl', function ($scope, $http, $location){

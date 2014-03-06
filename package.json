@@ -13,6 +13,7 @@
     "underscore": "~1.6.0",
     "passport-local": "~0.1.6",
     "passport": "~0.2.0",
-    "connect-mongo": "~0.4.0"
+    "connect-mongo": "~0.4.0",
+    "async": "~0.2.10"
   }
 }

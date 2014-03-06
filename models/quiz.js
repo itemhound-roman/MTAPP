@@ -6,10 +6,9 @@ var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 var questionSchema = new Schema({
-  //questionImage   : String ,
-  //  questionNumber  : Number
     questionText    : String
   , answerText      : String
+  , questionImage   : String
   , questionUsed    : { type: Boolean, default: false }
 });
 
@@ -24,15 +23,17 @@ var categorySchema = new Schema({
 var questionResultSchema = new Schema({
     questionNumber : Number
   , questionChecked : {type: Boolean, default: false}
-  , result : {type: Boolean, default: false}
+  , score : {type: Number, default: 0}
 })
+
 
 var categoryResultSchema = new Schema({
     categoryScore : {type: Number, default: 0}
   , categoryName : String
   , categoryNumber : Number
-  , questionResult : [questionResultSchema]
+  , questionResults : [questionResultSchema]
 })
+
 
 
 var teamSchema = new Schema({

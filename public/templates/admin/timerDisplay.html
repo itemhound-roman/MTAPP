@@ -1,8 +1,11 @@
-<div>
-  <h1> {{quizName}} </h1>
-  <hr/>
-  <br/>
-  <br/>
-  <br/>
-  <label class="label label-danger custom-label"> {{timer}} </label>
+<div class="container">
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <!--<h2> {{quizName}} </h2>-->
+      <br/><br/><br/><br/><br/><br/><br/><br/>
+      <label class="label label-danger custom-label"> {{timer}} </label>
+      <audio id="audiobuzzer" src="/audio/buzzer.wav" preload="auto"></audio>
+      <audio id="audiobeep" src="/audio/beep.wav" preload="auto"></audio>
+    </div>
+  </div>
 </div>

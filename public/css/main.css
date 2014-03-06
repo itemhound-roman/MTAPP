@@ -15,8 +15,8 @@
 }
 
 .custom-label{
-  font-size: 200px;
-  text-align:center;
+  font-size: 300px;
+  text-align:center;  
   margin-left:25%;
   margin-right:25%;
 }
@@ -61,4 +61,18 @@
 
 .result-false{
   background: rgba(255,0,0,0.5);
+}
+
+.fixed-width{
+  table-layout: fixed;
+  width:500px;
+  /*
+  width: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  */
+}
+
+.td-0{
+  background-color: rgb(200,200,200);
 }

@@ -1,14 +1,17 @@
-<div ng-hide="quizzes.length">
-  <hr/>
-    <h3> No Quizzes Yet
-      <a href="#/create" class='btn btn-lg btn-info'> Create </a>
+<div class="row clearfix">
+  <div class="col-md-12 column">
+    <div ng-hide="quizzes.length">
+      <hr/>
+        <h3> No Quizzes Yet
+          <a href="#/create" class='btn btn-lg btn-info'> Create </a>
+        </h3>
+      <hr/>
+    </div>
+    <h3 ng-repeat="quiz in quizzes">  
+      <p> 
+        {{$index + 1}}. {{quiz.quizName}}  
+        <button class='btn btn-info' ng-click="resetQuiz(quiz._id)"> Reset </button>
+      </p>
     </h3>
-  <hr/>
+  </div>
 </div>
-
-<h3 ng-repeat="quiz in quizzes">  
-  <p> 
-    {{$index + 1}}. {{quiz.quizName}}  
-    <button class='btn btn-info' ng-click="resetQuiz(quiz._id)"> Reset </button>
-  </p>
-</h3>

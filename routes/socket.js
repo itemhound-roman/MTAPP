@@ -1,6 +1,7 @@
 
 
 var _ = require('underscore');
+var http = require('http');
 
 var sockets = [];
 var unassignedSockets = [];
@@ -22,14 +23,7 @@ module.exports = function (socket) {
   });
 
   socket.on('new-result', function(data){
-    console.log("newres");
-    console.log(data);
     socket.broadcast.emit('new-result', data);
-  })
-
-  socket.on('clear', function(data){
-    data.schoolId = socket.id;
-    socket.broadcast.emit('clear', data);
   })
 
   socket.on('clearAllCanvases', function(data){    
@@ -39,19 +33,6 @@ module.exports = function (socket) {
   socket.on('refreshPages', function(data){
     socket.broadcast.emit('refreshPages', data);
   })
-
-  /*
-  socket.on('draw:end', function (data) {    
-    data.artist = socket.id;
-    socket.broadcast.emit('draw:end', data)
-  }); 
-
-  socket.on('draw:progress', function (data, start, coordinates) {    
-    data.artist = socket.id;
-    socket.broadcast.emit('draw:progress', data)
-  });
-
-*/
 
   socket.on('identify', function(data){
     if (data.identity == "quizmaster"){
@@ -76,7 +57,6 @@ module.exports = function (socket) {
   })
 
   socket.on('canvasImage', function(data){
-    //data: {'dataUrl': dataUrl})
     data.schoolId = socket.id;
     socket.broadcast.emit('canvasImage', data);
   });
@@ -84,10 +64,15 @@ module.exports = function (socket) {
 
   socket.on('new-question', function(data){
     console.log("NEW QUESTION!!!!!")
-    console.log('data');
+    console.log(data);
     socket.broadcast.emit('new-question', data);
-    //console.log(data); data.questionText, question.points, question.time
   });
+
+  socket.on('update-result', function(data){    
+    console.log(data);
+    socket.broadcast.emit('update-result', data);
+    
+  })
 
   socket.on('disconnect', function(data){
     console.log("someone disconnected");
@@ -99,10 +84,5 @@ module.exports = function (socket) {
       socket.broadcast.emit('school-left', {schoolName: school_left.schoolName, schoolId: socket.id});
     }
   })
-
-  // setInterval(function () {
-  //   socket.emit('erika', {
-  //     time: (new Date()).toString()
-  //   });
-  // }, 1000);
+  
 };
