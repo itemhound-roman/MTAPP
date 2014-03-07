@@ -38,6 +38,7 @@ var categoryResultSchema = new Schema({
 
 var teamSchema = new Schema({
     teamName  : String
+  , teamRegion: String
   , teamScore : {type: Number, default: 0 }
   , schoolId  : String
   , active    : {type: Boolean, default: false  }

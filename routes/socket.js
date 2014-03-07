@@ -34,6 +34,11 @@ module.exports = function (socket) {
     socket.broadcast.emit('refreshPages', data);
   })
 
+  socket.on('update-region', function(data){
+    console.log('update region');
+    socket.broadcast.emit('update-region', data);
+  })
+
   socket.on('identify', function(data){
     if (data.identity == "quizmaster"){
       quizmaster.push({

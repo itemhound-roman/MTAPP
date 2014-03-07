@@ -96,10 +96,22 @@ app.controller('scoreboardCtrl', function ($scope, $http, $routeParams, socket){
   $scope.showSummary = true;
 
   socket.on('update-result', function(data){
-    getScores(function(){
-      selectCategory(data.categoryName);
-    });
+    if(data.quizId == quizId){
+      getScores(function(){
+        selectCategory(data.categoryName);
+      });
+    }      
   });
+
+  socket.on('update-region', function(data){
+    console.log('new-region!');
+    if(data.quizId == quizId){
+      getScores(function(){
+
+      })
+    }
+
+  })
 
   socket.on('refreshPages', function(data){    
     if(data.quizId == quizId){

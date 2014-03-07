@@ -19,7 +19,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var users = [
-  {id: 1, passkey: 'abcd', userClass:10},
+  {id: 1, passkey: 'MMC Finals Pass', userClass:10},
   {id: 2, passkey: 'a8solutions', userClass:1}
 ];
 

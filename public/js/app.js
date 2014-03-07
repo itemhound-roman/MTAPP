@@ -108,10 +108,10 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
       while (o=o.offsetParent)
         l += o.offsetLeft;
       o = document.getElementById('myCanvas');
-      while (o=o.offsetParent)
+      //while (o=o.offsetParent)
         t += o.offsetTop;
 
-      context.clearRect(l,t, canvas.width,canvas.height);
+      context.clearRect(0,t, canvas.width,canvas.height);
       project.clear();
     }    
   }
@@ -147,20 +147,39 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   $scope.canvas_class = "red-bordered"
   $scope.doOrDieMode = false;
   $scope.regions = [
-      {name: 'Region 1'},
-      {name: 'Region 2'},
-      {name: 'Region 3'},
-      {name: 'Region 4'},
-      {name: 'Region 5'},
-      {name: 'Region 6'},
-      {name: 'Region 7'},
-      {name: 'Region 8'},
-      {name: 'Region 9'},
-      {name: 'Region 10'},
-      {name: 'Region 11'},
-      {name: 'Region 12'},
+      {name: 'CAR'},
+      {name: 'NCR-A'},
+      {name: 'NCR-B'},
+      {name: 'Region I'},
+      {name: 'Region II'},
+      {name: 'Region III'},
+      {name: 'Region IV-A'},
+      {name: 'Region IV-B'},
+      {name: 'Region V'},
+      {name: 'Region VI'},
+      {name: 'Region VII'},
+      {name: 'Region VII'},
+      {name: 'Region IX'},
+      {name: 'Region X'},
+      {name: 'Region XI'},
+      {name: 'Region XII'},
+      {name: 'Region XIII'},
     ];
-  $scope.region = $scope.regions[0]; // red
+  $scope.region = $scope.regions[-1]; // red
+
+  $scope.updateRegion = function(){
+    var dataToSend = {
+      quizId: quizId,
+      teamName: teamName,
+      region: $scope.region.name
+    }
+
+    socket.emit('update-region', {'quizId': quizId});    
+    $http.post('/mapi/updateRegion', dataToSend).sucess(function(){
+    });
+
+
+  }
 
   $scope.sendCanvas = function(){
     $scope.disableSendCanvas = true;
@@ -175,22 +194,22 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
 
       var o = document.getElementById('myCanvas');
       var l =o.offsetLeft; var t = o.offsetTop;
-      while (o=o.offsetParent)
+      //while (o=o.offsetParent)
         l += o.offsetLeft;
       o = document.getElementById('myCanvas');
-      while (o=o.offsetParent)
+      //while (o=o.offsetParent)
         t += o.offsetTop;
 
-      context.clearRect(l,t,canvas.width, canvas.height);
+      context.clearRect(0,t,canvas.width, canvas.height);
       project.clear();
     }
   }
 
   //socket events  
   socket.on('connect', function(){
-    teamName = prompt("Enter School Team", "");
+    teamName = prompt("Enter Team Number", "");
     while(!teamName || teamName == ""){
-      teamName = prompt("Enter School Team", "");
+      teamName = prompt("Enter Team Number", "");
     }    
     $scope.data = {teamName: teamName};
     $scope.team_name = teamName;
@@ -254,18 +273,6 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
       else{
         $scope.question_class ="hidden";
       }
-      /*
-      if($scope.countdown_timer == 60){
-        $scope.category_name = "60-Second Round"
-        $scope.question_class ="";
-      }
-      if($scope.countdown_timer == 15){
-        $scope.category_name = "15-Second Round"
-      }
-      if($scope.countdown_timer == 30){
-        $scope.category_name = "30-Second Round"
-      }
-      */
 
       $scope.categoryheader = data.quizName + " : " + $scope.category_name;
     }
