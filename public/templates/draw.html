@@ -12,7 +12,7 @@
       </h3>
     </div>
     <div style='margin-top:2px;' class="col-md-3 column">
-      <h3> {{categoryheader}} </h3>
+      <h4> {{categoryheader}} </h4>
     </div>
     <div class="col-md-2 column">
       <h2> Score: 
@@ -31,10 +31,17 @@
     </div>
   </div>
   <div class="row clearfix"> 
-    <div class="col-md-12 column">
+    <div class="col-md-2 column">
       <button type="button" class="btn btn-primary canvas-button" ng-click="clearCanvas()">Clear</button>
-      &nbsp; &nbsp;
+    </div>
+    <div class="col-md-2 column">
       <button ng-disabled="disableSendCanvas" ng-show='doOrDieMode' type="button" class="btn btn-success canvas-button" ng-click="sendCanvas()"> Send </button>
+    </div>
+    <div class="col-md-2 column">
+    </div>
+      <div ng-show="canvasSent">
+        <h3>Sent to Judges</h3> 
+      </div>
     </div>
   </div>
   <div class="row-clearfix">

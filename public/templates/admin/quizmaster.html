@@ -41,8 +41,10 @@
          {{team.teamName}} - <input style="margin-top:10px; width:40px;" ng-model='team.score'> 
       </h5>
     </form>
+    <!--
     <button class="btn btn-large btn-info gary-button" ng-disabled="disableUpdate" ng-click="updateScoreboard()">Update Scores</button>
     <h3 ng-hide="isUpdated"> Scores Sent! </h3>
+    -->
   </div>
   <div class="col-md-4" ng-repeat="school in schools">
     <h4>{{school.teamName}} - <span class="label label-default">{{school.teamScore}}</span> - <span class="{{'label label-default active-' + school.active }}">{{"Connected: " + school.active}}</span> - <span ng-show='doOrDieMode' class="label label-default">{{school.timeReceived}}</span></h4>        
@@ -52,6 +54,7 @@
     
   </div>
 </div>
+
 <br>
 
 <div id="questionsModal" class="modal bs-modal-lg" role="dialog" >

@@ -61,6 +61,10 @@ app.config(['$routeProvider',
         templateUrl: '/templates/admin/scoreboard.html',
         controller: 'scoreboardCtrl'
       }).
+      when('/scorer/:quizId',{
+        templateUrl: '/templates/admin/scorer.html',
+        controller: 'scorerCtrl'
+      }).
       otherwise({
         redirectTo: '/'
       });
@@ -86,6 +90,10 @@ app.controller('indexCtrl', function ($scope, $http, $location){
 
   $scope.scoreboard = function(quizId){
     $location.path('/scoreboard/' + quizId);
+  }
+
+  $scope.scorer = function(quizId){
+    $location.path('/scorer/' + quizId); 
   }
 
 });
@@ -229,7 +237,8 @@ app.controller('quizmasterCtrl', function ($scope, $http, $route, $routeParams, 
   $scope.startTimeButtonDisable = true;
   $scope.hidelabel = false;
   $scope.disableUpdate = true;
-  $scope.isUpdated = true;
+  $scope.isUpdated = true;  
+  $scope.doOrDieMode = false;
   $scope.schools = [
     {
       teamName: 'Spare 1',
@@ -326,7 +335,14 @@ app.controller('quizmasterCtrl', function ($scope, $http, $route, $routeParams, 
     $scope.startTimeButtonDisable = false;
     socket.emit('new-question',toSend);    
     $scope.disableUpdate = false;
-    $scope.isUpdated = true;
+    $scope.isUpdated = true;    
+    if(activeCategoryName == "Do or Die"){
+      $scope.doOrDieMode = true;
+    }
+    else{
+      $scope.doOrDieMode = false;
+    }
+      
   }
 
   socket.on('new-school', function(data){
@@ -381,26 +397,24 @@ app.controller('quizmasterCtrl', function ($scope, $http, $route, $routeParams, 
     }
   })
 
-  socket.on('scoreboard-data', function(data){
-    console.log(data);
-  })
-
   socket.on('new-result', function(data){
     console.log(data);
-    if(data.action != 'undo'){
-      $scope.teams = _.map($scope.teams, function(team){
-        if(team.teamName == data.schoolName){
-          if(data.correct){
-            console.log('correct');
-            team.score = data.questionPoints;
+    if(quizId == data.quizId){
+      if(data.action != 'undo'){
+        $scope.teams = _.map($scope.teams, function(team){
+          if(team.teamName == data.schoolName){
+            if(data.correct){
+              console.log('correct');
+              team.score = data.questionPoints;
+            }
+            else{
+              team.score = 0;
+            }
           }
-          else{
-            team.score = 0;
-          }
-        }
-        return team;
-      })
-    }
+          return team;
+        })
+      }
+    }      
   })
 
   $scope.updateScoreboard = function(){
@@ -418,9 +432,10 @@ app.controller('quizmasterCtrl', function ($scope, $http, $route, $routeParams, 
     
 
     $http.post('/mapi/updateScores', scoreboardData).success(function(){
+       socket.emit('update-result', scoreboardData);
     });
     
-    socket.emit('update-result', scoreboardData);
+   
   }
 
   $scope.startTimer = function(){    
@@ -442,6 +457,94 @@ app.controller('quizmasterCtrl', function ($scope, $http, $route, $routeParams, 
       $scope.$apply();
     }
   }
+
+});
+
+
+app.controller('scorerCtrl', function ($scope, $http, $routeParams, $route, socket){
+  var quizId = $routeParams.quizId;
+  var categoryId = '';
+  var categoryName = '';
+  var activeCategoryName = '';
+
+  $scope.hidelabel = false;
+  $scope.disableUpdate = true;
+  $scope.isUpdated = true;
+
+  $http.get('/mapi/quiz/'+quizId)
+  .success(function(data){
+    var that = this;
+    if(data.isRunning) $scope.quizStatus = "Running";
+    else $scope.quizStatus="Not Started";    
+    $scope.inviteCode = data.inviteCode;
+    $scope.quizName = data.quizName;
+    $scope.teams = [];
+
+    var addTeam = function(data){  
+      data.score = 0; 
+      data.checked = false;       
+      $scope.teams.push(data);
+    };
+    
+    _.each(data.teams, function(team){
+      addTeam(team);      
+    });    
+  });
+
+  $scope.updateScoreboard = function(){
+    $scope.disableUpdate = true;
+    $scope.isUpdated = false;
+    var scoreboardData = new Object();
+    scoreboardData.quizId = quizId;
+    scoreboardData.categoryName = activeCategoryName;
+    scoreboardData.scores = $scope.teams.map(function(team){
+      var teamData = new Object;
+      teamData.teamName = team.teamName;
+      teamData.score = team.score;
+      return teamData;
+    })
+    
+
+    $http.post('/mapi/updateScores', scoreboardData).success(function(){
+       socket.emit('update-result', scoreboardData);
+    });  
+  }
+
+  socket.on('new-question', function(data){
+    if(data.quizId == quizId){
+      activeCategoryName = data.categoryName;
+      $scope.disableUpdate = false;
+      $scope.isUpdated = true;  
+      $scope.teams = $scope.teams.map(function(team){ team.checked = false; team.score = 0; return team; })
+    }
+  })
+
+  socket.on('refreshPages', function(data){
+    if(data.quizId == quizId){
+      $route.reload();
+    }
+  })
+
+  socket.on('new-result', function(data){
+    console.log('new result');
+    if(data.quizId == quizId){
+      if(data.action != 'undo'){
+        $scope.teams = _.map($scope.teams, function(team){
+          if(team.teamName == data.schoolName){
+            if(data.correct){
+              console.log('correct');
+              team.score = data.questionPoints;
+            }
+            else{
+              team.score = 0;
+            }
+            team.checked = true;
+          }
+          return team;
+        })
+      }
+    }      
+  })
 
 });
 
@@ -526,6 +629,7 @@ app.controller('judgesCtrl', function ($scope, $http, $routeParams, $route, sock
       this.answer = 'correct';      
       socket.emit('new-result',{
           school: this.schoolId
+        , quizId: quizId
         , schoolName: this.teamName
         , correct: true
         , action: 'accept'
@@ -541,6 +645,7 @@ app.controller('judgesCtrl', function ($scope, $http, $routeParams, $route, sock
       this.undoHistory.lastAction = 'reject';
       socket.emit('new-result',{
           school: this.schoolId
+        , quizId: quizId
         , schoolName: this.teamName
         , correct: false
         , action: 'reject'
@@ -557,6 +662,7 @@ app.controller('judgesCtrl', function ($scope, $http, $routeParams, $route, sock
         this.teamScore -= $scope.activeQuestion.points;
         socket.emit('new-result',{          
             school: this.schoolId 
+          , quizId: quizId
           , schoolName: this.teamName
           , correct: true 
           , action: 'undo' 
@@ -634,14 +740,16 @@ app.controller('judgesCtrl', function ($scope, $http, $routeParams, $route, sock
 
   socket.on('new-result', function(data){    
     console.log($scope.schools);
-    if(data.correct){
-      _.each($scope.schools, function(school){
-        if(school.schoolId == data.school){
-          school.currentAnswer.judged = true;
-          school.teamScore = data.score;
-        }
-      })
-    }
+    if(data.quizId == quizId){
+      if(data.correct){
+        _.each($scope.schools, function(school){
+          if(school.schoolId == data.school){
+            school.currentAnswer.judged = true;
+            school.teamScore = data.score;
+          }
+        })
+      }
+    }      
   });
 
 

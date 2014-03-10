@@ -146,6 +146,7 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
   $scope.countdown_timer = 0;
   $scope.canvas_class = "red-bordered"
   $scope.doOrDieMode = false;
+  $scope.canvasSent = false;
   $scope.regions = [
       {name: 'CAR'},
       {name: 'NCR-A'},
@@ -183,12 +184,14 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
 
   $scope.sendCanvas = function(){
     $scope.disableSendCanvas = true;
+    $scope.canvasSent = true;
     sendCanvas();
   }
 
   $scope.clearCanvas = function(){  
     if( !isTimeOut ){  
       $scope.disableSendCanvas = false;
+      $scope.canvasSent = false;
       var canvas = document.getElementById('myCanvas');
       var context = canvas.getContext('2d');
 
@@ -256,6 +259,9 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
         console.log("DO OR DIE");
         $scope.doOrDieMode = true;
       }
+      else{
+        $scope.doOrDieMode = false;
+      }
 
 
       $scope.quizmaster_question = data.questionText;
@@ -271,7 +277,7 @@ app.controller('drawCtrl', function ($scope, $http, $route, $routeParams, socket
         $scope.question_class ="";        
       }
       else{
-        $scope.question_class ="hidden";
+        $scope.question_class = "hidden";
       }
 
       $scope.categoryheader = data.quizName + " : " + $scope.category_name;

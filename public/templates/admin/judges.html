@@ -8,20 +8,20 @@
   <div class="col-md-4" ng-repeat="school in schools">
     <br/>
     <div style="margin-top:40px;">
-      <h4>{{school.teamName}} - <span class="label label-default">{{school.teamScore}}</span> - <span class="{{'label label-default active-' + school.active }}">{{"Connected: " + school.active}}</span> - <span ng-show='doOrDieMode' class="label label-default">{{school.timeReceived}}</span></h4>        
+      <h4>{{school.teamRegion}} - <span class="label label-default">{{school.teamScore}}</span> - <span class="{{'label label-default active-' + school.active }}">{{"Connected: " + school.active}}</span> - <span ng-show='doOrDieMode' class="label label-default">{{school.timeReceived}}</span></h4>        
         <div class="{{school.answer}}">          
           <img class="{{'img text-center ' + school.answer}}" height="300px" width="400px" style="border: 2px solid rgb(67, 0, 0);" ng-src="{{school.currentAnswer.src}}"> 
         </div>
-      <div class="btn judges-button">
-        <a ng-disabled="school.currentAnswer.judged" class="btn btn-success btn-lg" ng-click='school.acceptAnswer()'>
+      <div class="btn">
+        <a ng-disabled="school.currentAnswer.judged" class="btn btn-success judges-button" ng-click='school.acceptAnswer()'>
           Accept
         </a>
       </div>
-      <div class="btn judges-button">
-        <a ng-disabled="school.undoHistory.disabled" class="btn btn-default btn-lg" ng-click="school.undoChecking()"> Undo </a>
+      <div class="btn">
+        <a ng-disabled="school.undoHistory.disabled" class="btn btn-default judges-button" ng-click="school.undoChecking()"> Undo </a>
       </div>
-      <div class="btn judges-button">
-        <a ng-disabled="school.currentAnswer.judged"  class="btn btn-danger btn-lg" ng-click='school.rejectAnswer()'>
+      <div class="btn">
+        <a ng-disabled="school.currentAnswer.judged"  class="btn btn-danger judges-button" ng-click='school.rejectAnswer()'>
           Reject
         </a>
       </div> 

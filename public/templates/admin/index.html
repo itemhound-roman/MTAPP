@@ -10,7 +10,7 @@
 
     <h3 ng-repeat="quiz in quizzes">  
       <div class="row clearfix">
-        <div class="col-md-2 column">
+        <div class="col-md-5 col-md-offset-1 column"> 
           <p> 
             {{$index + 1}}. {{quiz.quizName}}  
           </p>
@@ -19,8 +19,9 @@
           <p>      
             <button class='btn btn-info' ng-click="joinContest(quiz._id)"> Judge </button>
             <button class='btn btn-info' ng-click="quizMaster(quiz._id)"> QuizMaster </button>
+            <button class='btn btn-info' ng-click="scorer(quiz._id)"> Scorer</button>
             <button class='btn btn-info' ng-click="timerRedirect(quiz._id)"> Timer </button>
-            <button class='btn btn-info' ng-click="scoreboard(quiz._id)"> Scoreboard</button>
+            <button class='btn btn-info' ng-click="scoreboard(quiz._id)"> Scoreboard</button>            
           </p>
         </div>
       </div>
